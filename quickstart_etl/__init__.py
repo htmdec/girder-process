@@ -8,6 +8,7 @@ from dagster import (
 
 from . import assets
 from .resources.girder import GirderConnection, GirderCredentials
+from .jobs import items_assets_sensor
 
 daily_refresh_schedule = ScheduleDefinition(
     job=define_asset_job(name="all_assets_job"), cron_schedule="0 0 * * *"
@@ -22,4 +23,5 @@ defs = Definitions(
             url=EnvVar("GIRDER_URL"),
         )
     },
+    sensors=[items_assets_sensor],
 )

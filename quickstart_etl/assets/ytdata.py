@@ -5,6 +5,15 @@ from dagster import AssetExecutionContext, MetadataValue, asset
 from ..resources.girder import GirderConnection
 
 
+# @asset(
+#     group_name="yt_sample_data",
+#     compute_kind="yt data collection",
+#     partitions_def="sample_datasets",
+# )
+# def dataset_information(girder_connection: GirderConnection):
+#     pass
+
+
 @asset(group_name="yt_sample_data", compute_kind="yt data collection")
 def current_yt_sample_data(girder_connection: GirderConnection) -> List[str]:
     """Get the current IDs of items in the yt_sample_data collection on hub.yt."""
