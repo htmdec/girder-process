@@ -14,11 +14,13 @@ def make_collection_contents_job(
                     partitions_def.name, item["name"]
                 ):
                     new_items.append(item)
+        run_requests = []
+        for item in new_items:
+            tags = partitions_def.get_tags_for_partition_key(item["name"])
+            tags.update(item)
+            run_requests.append(RunRequest(partition_key=item["name"], tags=tags))
         return SensorResult(
-            run_requests=[
-                RunRequest(partition_key=item["name"], run_config=item)
-                for item in new_items
-            ],
+            run_requests=run_requests,
             dynamic_partitions_requests=[
                 partitions_def.build_add_request([_["name"] for _ in new_items])
             ],

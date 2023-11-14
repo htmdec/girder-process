@@ -3,15 +3,16 @@ import pandas as pd
 
 from dagster import AssetExecutionContext, MetadataValue, asset
 from ..resources.girder import GirderConnection
+from ..partitions import items_partitions_def
 
 
-# @asset(
-#     group_name="yt_sample_data",
-#     compute_kind="yt data collection",
-#     partitions_def="sample_datasets",
-# )
-# def dataset_information(girder_connection: GirderConnection):
-#     pass
+@asset(group_name="yt_dataset_items", partitions_def=items_partitions_def)
+def dataset_metadata(
+    context: AssetExecutionContext, girder_connection: GirderConnection
+) -> dict:
+    item_info = girder_connection.get_item(context.run_tags["_id"])
+    context.add_output_metadata({"preview": MetadataValue.json(item_info)})
+    return item_info
 
 
 @asset(group_name="yt_sample_data", compute_kind="yt data collection")
